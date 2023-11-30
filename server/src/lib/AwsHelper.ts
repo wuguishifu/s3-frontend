@@ -2,10 +2,10 @@ import { S3Client } from '@aws-sdk/client-s3';
 import { JsonDB } from 'node-json-db';
 
 export default class AwsHelper {
-    private s3Client: S3Client | null;
+    public client: S3Client | null;
 
     constructor() {
-        this.s3Client = null;
+        this.client = null;
     }
 
     init = async (db: JsonDB) => {
@@ -14,7 +14,7 @@ export default class AwsHelper {
         const { region, key, secret } = data;
         if (!region || !key || !secret) return;
 
-        this.s3Client = new S3Client({
+        this.client = new S3Client({
             region,
             credentials: {
                 accessKeyId: key,
@@ -22,6 +22,4 @@ export default class AwsHelper {
             }
         });
     }
-
-    s3 = () => this.s3Client;
 }

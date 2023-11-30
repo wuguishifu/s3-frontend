@@ -8,8 +8,8 @@ export default (db: JsonDB, s3: AwsHelper): Router => {
     const router = Router();
 
     router.get('/buckets', async (_, res) => {
-        if (!s3.s3()) return res.status(500).send({ message: 's3 not initialized' });
-        const buckets = await s3.s3()!.send(new ListBucketsCommand({}));
+        if (!s3.client) return res.status(500).send({ message: 's3 not initialized' });
+        const buckets = await s3.client!.send(new ListBucketsCommand({}));
         res.send(buckets);
     });
 

@@ -17,7 +17,7 @@ export default function Navbar({ className }: { className?: string }) {
                     <NavigationMenuItem>
                         <NavigationMenuTrigger className="w-[160px]">
                             <Link href="/buckets" className={'flex flex-row gap-2 text-lg font-medium text-primary hover:text-primary/90 justify-center items-center'}>
-                                <Folders />
+                                <Folders size={24} />
                                 <span>Buckets</span>
                             </Link>
                         </NavigationMenuTrigger>
@@ -34,7 +34,7 @@ export default function Navbar({ className }: { className?: string }) {
                     </NavigationMenuItem>
                     <NavigationMenuItem className="hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground px-4 py-2 h-10 rounded-md">
                         <Link href="/settings" className={'flex flex-row gap-2 text-lg font-medium text-primary hover:text-primary/90 justify-center'}>
-                            <Settings />
+                            <Settings size={24} />
                             <span>Settings</span>
                         </Link>
                     </NavigationMenuItem>

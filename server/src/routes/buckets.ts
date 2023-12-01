@@ -52,7 +52,7 @@ export default (s3: AwsHelper): Router => {
     router.post('/', async (req, res) => {
         const { region, name } = req.body as { region: string, name: string };
         if (!region) return res.status(400).send({ message: 'region is required' });
-        if (!name) return res.status(400).send({ message: 'bucket is required' });
+        if (!name) return res.status(400).send({ message: 'name is required' });
 
         s3.generate(region);
         if (!s3.client[region]) return res.status(500).send({ message: 's3 not initialized properly' });
@@ -73,7 +73,7 @@ export default (s3: AwsHelper): Router => {
 
     router.delete('/', async (req, res) => {
         const { name } = req.query as { name: string };
-        if (!name) return res.status(400).send({ message: 'bucket is required', deleted: false });
+        if (!name) return res.status(400).send({ message: 'name is required', deleted: false });
 
         const region = bucketLocationCache[name]?.region ?? 'us-east-1';
         if (!s3.client[region]) return res.status(500).send({ message: 's3 not initialized properly', deleted: false });
@@ -124,8 +124,7 @@ export default (s3: AwsHelper): Router => {
     });
 
     router.get('/documents', async (req, res) => {
-        const { bucket, "continuation-token": continuationToken } = req.query as
-            { bucket: string, "continuation-token": string | undefined };
+        const { bucket, continuationToken } = req.query as { bucket: string, continuationToken?: string };
 
         if (!bucket) return res.status(400).send({ message: 'bucket is required' });
         const region = bucketLocationCache[bucket]?.region ?? 'us-east-1';

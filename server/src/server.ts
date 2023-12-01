@@ -2,6 +2,7 @@ import express from "express";
 import http from "http";
 import config from "./config.json";
 import Router from "./router";
+import cors from 'cors';
 
 import './db.json';
 
@@ -15,6 +16,8 @@ s3.init(db);
 
 const app = express();
 const server = http.createServer(app);
+
+app.use(cors({ origin: '*' }));
 
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json({ limit: '48mb' }));

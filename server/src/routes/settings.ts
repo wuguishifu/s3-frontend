@@ -23,8 +23,8 @@ export default (db: JsonDB, s3: AwsHelper): Router => {
             return res.status(500).send({ error: 'could not save key', message });
         }
 
+        s3.setKey(key);
         res.status(201).send({ key });
-        await s3.init(db);
     });
 
     router.post('/aws/secret', async (req, res) => {
@@ -39,8 +39,8 @@ export default (db: JsonDB, s3: AwsHelper): Router => {
             return res.status(500).send({ error: 'could not save secret', message });
         }
 
+        s3.setSecret(secret);
         res.status(201).send({ secret });
-        await s3.init(db);
     });
 
     router.post('/aws/region', async (req, res) => {
@@ -56,7 +56,6 @@ export default (db: JsonDB, s3: AwsHelper): Router => {
         }
 
         res.status(201).send({ region });
-        await s3.init(db);
     });
 
     router.get('/aws/region', async (req, res) => {

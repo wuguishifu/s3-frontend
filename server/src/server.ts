@@ -1,6 +1,5 @@
 import express from "express";
 import http from "http";
-import minimist from "minimist";
 import config from "./config.json";
 import Router from "./router";
 
@@ -9,9 +8,8 @@ import './db.json';
 import { Config, JsonDB } from "node-json-db";
 import AwsHelper from "./lib/AwsHelper";
 
-const args = minimist(process.argv.slice(2));
-
-const s3 = new AwsHelper();
+// the default region doesn't really matter since we'll be using the regional clients for most requests
+const s3: AwsHelper = new AwsHelper('us-east-1');
 const db = new JsonDB(new Config('./dist/db.json', true, true, '/'));
 s3.init(db);
 

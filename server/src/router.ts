@@ -8,7 +8,7 @@ export default (db: JsonDB, s3: AwsHelper): Router => {
     const router = Router();
 
     router.use('/settings', settings(db, s3));
-    router.use('/buckets', buckets(db, s3));
+    router.use('/buckets', buckets(s3));
 
     return router;
 }

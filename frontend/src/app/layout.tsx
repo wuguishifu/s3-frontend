@@ -2,8 +2,9 @@ import type { Metadata } from 'next'
 import { Nunito } from 'next/font/google'
 import './globals.css'
 import Navbar from '@/components/ui/navbar'
+import Providers from './providers';
 
-const inter = Nunito({ subsets: ['latin'] });
+const nunito = Nunito({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
     title: 'S3C',
@@ -13,11 +14,13 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
     return (
         <html lang="en">
-            <body className={inter.className}>
-                <div className='flex flex-col h-full px-4 min-h-screen'>
-                    <Navbar />
-                    {children}
-                </div>
+            <body className={nunito.className}>
+                <Providers>
+                    <div className='flex flex-col h-full px-4 min-h-screen'>
+                        <Navbar />
+                        {children}
+                    </div>
+                </Providers>
             </body>
         </html>
     );

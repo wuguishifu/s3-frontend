@@ -9,6 +9,7 @@ import React from 'react';
 import { useForm } from "react-hook-form";
 import z from 'zod';
 import { Input } from "./ui/input";
+import { useApi } from "@/api/context";
 
 const regionGroups = [
     {
@@ -33,7 +34,7 @@ const regionGroups = [
 ]
 
 const formSchema = z.object({
-    bucketName: z.string()
+    name: z.string()
         .min(3, { message: "Bucket name must be at least 3 characters long." })
         .max(63, { message: "Bucket name must be at most 63 characters long." })
         .refine(bucketName => bucketName.match(/^[a-z0-9.-]+$/), { message: "Bucket name must only contain lower case letters, periods, and hyphens." })
@@ -51,17 +52,23 @@ const formSchema = z.object({
 
 export default function CreateBucket() {
     const [open, setOpen] = React.useState(false);
+    const { request, endpoints } = useApi();
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            bucketName: "",
+            name: "",
             region: "",
         },
     });
 
-    function onSubmit(values: z.infer<typeof formSchema>) {
-        console.log(values);
+    async function onSubmit(values: z.infer<typeof formSchema>) {
+        const { status, data } = await request(endpoints.buckets.create(), { method: 'POST' }, values);
+        if (status > 299) {
+            form.setError("name", { message: data.message });
+            return;
+        }
+        setOpen(false);
     }
 
     React.useEffect(() => void (open && form.reset()), [open]);
@@ -117,7 +124,7 @@ export default function CreateBucket() {
                         />
                         <FormField
                             control={form.control}
-                            name="bucketName"
+                            name="name"
                             render={({ field }) => (
                                 <FormItem>
                                     <FormLabel>Bucket Name (required)</FormLabel>

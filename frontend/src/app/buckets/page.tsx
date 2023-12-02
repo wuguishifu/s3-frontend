@@ -1,11 +1,7 @@
 'use client';
 
-import CreateBucket from "@/components/create-bucket";
-import endpoints from "@/api/endpoints";
-import useFetch from "@/api/useFetch";
-import { type Bucket } from "./columns";
 import { BucketTable } from "./bucket-table";
-import { columns } from "./columns";
+import { columns, type Bucket } from "./columns";
 
 const data = {
     "buckets": [

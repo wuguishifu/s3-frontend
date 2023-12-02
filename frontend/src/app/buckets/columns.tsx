@@ -1,6 +1,5 @@
 "use client";
 
-import { useApi } from '@/api/context';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
@@ -93,15 +92,10 @@ export const columns: ColumnDef<Bucket>[] = [
         cell: ({ row }) => {
             const bucket = row.original;
             const [open, setOpen] = React.useState(false);
-            const { endpoints, request } = useApi();
 
             const onDelete = React.useCallback(async (): Promise<{ status: number, data: any }> => {
-                try {
-                    const { status, data } = await request(endpoints.buckets.delete({ name: bucket.name }), { method: 'DELETE' });
-                    return { status, data };
-                } catch (error) {
-                    return { status: 500, data: { message: (error as Error).message } };
-                }
+                console.log('delete', bucket.name);
+                return { status: 500, data: { error: "not implemented" } };
             }, []);
 
             return (

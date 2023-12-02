@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import { Nunito } from 'next/font/google'
 import './globals.css'
 import Navbar from '@/components/ui/navbar'
-import Providers from './providers';
+import ProviderTree from './providers';
 
 const nunito = Nunito({ subsets: ['latin'] });
 
@@ -15,12 +15,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     return (
         <html lang="en">
             <body className={nunito.className}>
-                <Providers>
+                <ProviderTree>
                     <div className='flex flex-col h-full px-4 min-h-screen'>
                         <Navbar />
                         {children}
                     </div>
-                </Providers>
+                </ProviderTree>
             </body>
         </html>
     );

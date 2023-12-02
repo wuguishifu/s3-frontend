@@ -1,11 +1,11 @@
 'use client';
 
-import { ApiProvider } from "@/api/context";
+import { KeystoreProvider } from "@/api/keystore";
 
-export default function Providers({ children }: { children: React.ReactNode }) {
+export default function ProviderTree({ children }: { children: React.ReactNode }) {
     return (
-        <ApiProvider>
+        <KeystoreProvider>
             {children}
-        </ApiProvider>
+        </KeystoreProvider>
     );
 };

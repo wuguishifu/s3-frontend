@@ -9,29 +9,7 @@ import React from 'react';
 import { useForm } from "react-hook-form";
 import z from 'zod';
 import { Input } from "./ui/input";
-import { useApi } from "@/api/context";
-
-const regionGroups = [
-    {
-        label: "United States",
-        regions: [
-            { value: "us-east-1", label: "US East (N. Virginia)" },
-            { value: "us-east-2", label: "US East (Ohio)" },
-            { value: "us-west-1", label: "US West (N. California)" },
-            { value: "us-west-2", label: "US West (Oregon)" },
-        ]
-    },
-    {
-        label: "Europe",
-        regions: [
-            { value: "eu-central-1", label: "Europe (Frankfurt)" },
-            { value: "eu-west-1", label: "Europe (Ireland)" },
-            { value: "eu-west-2", label: "Europe (London)" },
-            { value: "eu-west-3", label: "Europe (Paris)" },
-            { value: "eu-north-1", label: "Europe (Stockholm)" }
-        ]
-    }
-]
+import { regionGroups } from "@/lib/aws";
 
 const formSchema = z.object({
     name: z.string()
@@ -52,7 +30,6 @@ const formSchema = z.object({
 
 export default function CreateBucket() {
     const [open, setOpen] = React.useState(false);
-    const { request, endpoints } = useApi();
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -63,7 +40,8 @@ export default function CreateBucket() {
     });
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
-        const { status, data } = await request(endpoints.buckets.create(), { method: 'POST' }, values);
+        console.log(values);
+        const { status, data } = { status: 500, data: { error: "not implemented", message: "not implemented" } };
         if (status > 299) {
             form.setError("name", { message: data.message });
             return;

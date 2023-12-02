@@ -12,6 +12,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel } from "@/components/ui/form";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Accordion, AccordionTrigger, AccordionContent, AccordionItem } from '../ui/accordion';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog"
 
 import { regionGroups } from "@/lib/aws";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -28,8 +29,8 @@ const formSchema = z.object({
 
 export default function AmazonS3() {
     const [open, setOpen] = React.useState(false);
-    const [useKeystore, setUseKeystore] = React.useState(false);
-    const [showAdvanced, setShowAdvanced] = React.useState(false);
+    const [useKeystore, setUseKeystore] = React.useState(true); // load from db
+    const [keystoreWarningOpen, setKeystoreWarningOpen] = React.useState(false);
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -43,6 +44,16 @@ export default function AmazonS3() {
     async function onSubmit(values: z.infer<typeof formSchema>) {
         console.log(values);
     }
+
+    async function onDelete() {
+        console.log('delete');
+    }
+
+    React.useEffect(() => {
+        if (!useKeystore) {
+            setKeystoreWarningOpen(true);
+        }
+    }, [useKeystore]);
 
     return (
         <Dialog open={open} onOpenChange={setOpen}>
@@ -143,7 +154,20 @@ export default function AmazonS3() {
                             </Label>
                             <div className="flex-1" />
                             <Switch id="keystore-switch" checked={useKeystore} onCheckedChange={setUseKeystore} />
+                            <AlertDialog open={keystoreWarningOpen} onOpenChange={setKeystoreWarningOpen}>
+                                <AlertDialogContent>
+                                    <AlertDialogHeader>Use browser cache?</AlertDialogHeader>
+                                    <AlertDialogDescription>
+                                        Using the supplied keystore server is highly recommended. If you do not use the keystore, private keys will be stored in your browser's cache so you do not have to input them every time. This is dangerous, and can make your keys vulnerable to attacks. S3C is not liable for any damage caused by this action.
+                                    </AlertDialogDescription>
+                                    <AlertDialogFooter>
+                                        <AlertDialogCancel onClick={() => setUseKeystore(true)}>Cancel</AlertDialogCancel>
+                                        <AlertDialogAction className={buttonVariants({ variant: 'destructive' })}>Dangerously Use Browser Cache</AlertDialogAction>
+                                    </AlertDialogFooter>
+                                </AlertDialogContent>
+                            </AlertDialog>
                         </div>
+                        <Button variant="secondary">Learn more</Button>
                     </div>
                     <Accordion type='multiple'>
                         <AccordionItem value='advanced'>
@@ -166,7 +190,19 @@ export default function AmazonS3() {
                 </div>
                 <div className='px-6 -mt-4 space-y-4'>
                     <Separator />
-                    <Button variant="destructive">Delete Provider</Button>
+                    <AlertDialog>
+                        <AlertDialogTrigger className={buttonVariants({ variant: 'destructive' })}>Delete Access Keys</AlertDialogTrigger>
+                        <AlertDialogContent>
+                            <AlertDialogHeader>Are you sure?</AlertDialogHeader>
+                            <AlertDialogDescription>
+                                This will delete your access keys from the keystore and you will no longer be able to access your data through this app. The data will not be deleted, and you will be able to access it through the AWS website.
+                            </AlertDialogDescription>
+                            <AlertDialogFooter>
+                                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                <AlertDialogAction onClick={onDelete} className={buttonVariants({ variant: 'destructive' })}>Delete Access Keys</AlertDialogAction>
+                            </AlertDialogFooter>
+                        </AlertDialogContent>
+                    </AlertDialog>
                 </div>
             </DialogContent>
         </Dialog>

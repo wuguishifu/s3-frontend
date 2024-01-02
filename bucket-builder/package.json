@@ -1,30 +1,85 @@
 {
   "name": "bucket-builder",
-  "version": "0.1.0",
+  "author": "Bo Bramer",
+  "description": "Bucket Store gui tool for creating s3 buckets",
   "private": true,
+  "version": "0.0.0",
+  "type": "module",
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
+    "dev": "vite",
+    "dev:electron": "electron ./electron-app.js",
+    "build": "npm run build:ts && npm run build:vite && npm run build:electron",
+    "build:ts": "tsc",
+    "build:vite": "vite build",
+    "build:electron": "npx electron-builder",
+    "buildStart": "electron .",
+    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "preview": "vite preview"
   },
   "dependencies": {
+    "@radix-ui/react-slot": "^1.0.2",
+    "aws-cdk-lib": "^2.117.0",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
+    "constructs": "^10.3.0",
+    "electron-is-dev": "^2.0.0",
     "lucide-react": "^0.303.0",
-    "next": "14.0.4",
-    "react": "^18",
-    "react-dom": "^18",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "source-map-support": "^0.5.21",
     "tailwind-merge": "^2.2.0",
     "tailwindcss-animate": "^1.0.7"
   },
   "devDependencies": {
-    "@types/node": "^20",
-    "@types/react": "^18",
-    "@types/react-dom": "^18",
-    "autoprefixer": "^10.0.1",
-    "postcss": "^8",
-    "tailwindcss": "^3.3.0",
-    "typescript": "^5"
+    "@types/jest": "^29.5.11",
+    "@types/node": "^20.10.6",
+    "@types/react": "^18.2.43",
+    "@types/react-dom": "^18.2.17",
+    "@typescript-eslint/eslint-plugin": "^6.14.0",
+    "@typescript-eslint/parser": "^6.14.0",
+    "@vitejs/plugin-react": "^4.2.1",
+    "autoprefixer": "^10.4.16",
+    "aws-cdk": "^2.117.0",
+    "electron": "^28.1.0",
+    "electron-builder": "^24.9.1",
+    "eslint": "^8.55.0",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-react-refresh": "^0.4.5",
+    "jest": "^29.7.0",
+    "postcss": "^8.4.32",
+    "tailwindcss": "^3.4.0",
+    "ts-jest": "^29.1.1",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.2.2",
+    "vite": "^5.0.8"
+  },
+  "main": "./dist/electron-app.js",
+  "build": {
+    "extends": null,
+    "productName": "Bucket Builder",
+    "appId": "com.wuguishifu.bucket-store|bucket-builder",
+    "directories": {
+      "buildResources": "public",
+      "output": "./electron_build"
+    },
+    "extraResources": [
+      "./public/**/*"
+    ],
+    "extraMetadata": {
+      "main": "./dist/electron-app.js"
+    },
+    "win": {
+      "target": [
+        "nsis",
+        "msi"
+      ],
+      "icon": "./public/assets/icon.ico"
+    },
+    "files": [
+      "./dist/**/*",
+      "./node_modules/**/*",
+      "./package.json",
+      "./package-lock.json"
+    ]
   }
 }

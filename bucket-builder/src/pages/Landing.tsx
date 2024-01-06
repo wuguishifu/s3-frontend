@@ -1,8 +1,8 @@
-import { open } from "@tauri-apps/api/shell";
-import { Button, buttonVariants } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
+import { open } from "@tauri-apps/api/shell";
+import { Link } from "react-router-dom";
 
 export function Landing() {
     return (
@@ -33,8 +33,8 @@ export function Landing() {
                 <div className="flex flex-row items-center justify-center gap-4 mb-8">
                     <TooltipProvider>
                         <Tooltip>
-                            <TooltipTrigger>
-                                <Button variant="secondary" className="w-56" onClick={() => open("https://docs.aws.amazon.com/service-authorization/latest/reference/list_amazons3.html")}>Amazon S3 Docs</Button>
+                            <TooltipTrigger >
+                                <div className={cn(buttonVariants({ variant: 'secondary' }), 'w-56')} onClick={() => open("https://docs.aws.amazon.com/service-authorization/latest/reference/list_amazons3.html")}>Amazon S3 Docs</div>
                             </TooltipTrigger>
                             <TooltipContent>
                                 <p className="my-0">Read the Amazon S3 docs for more information about IAM actions.</p>

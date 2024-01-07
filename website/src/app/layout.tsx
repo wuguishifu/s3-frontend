@@ -1,8 +1,12 @@
 import type { Metadata } from 'next'
 import { Nunito } from 'next/font/google'
 import './globals.css'
+import { cn } from '@/lib/utils'
 
-const nunito = Nunito({ subsets: ['latin'] })
+const nunito = Nunito({
+  subsets: ['latin'],
+  variable: '--font-sans-serif'
+});
 
 export const metadata: Metadata = {
   title: 'Bucket Store',
@@ -16,7 +20,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={nunito.className}>{children}</body>
+      <body className={cn(nunito.className, 'h-screen bg-background antialiased')}>
+        {children}
+      </body>
     </html>
   )
 }

@@ -14,11 +14,16 @@ type RequestBody = {
 };
 
 export const handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
+    if (process.env.STAGE === 'dev') console.log(event);
+
     if (!event.body) {
-        return {
+        const response = {
             statusCode: 400,
             body: JSON.stringify({ error: 'bad request', message: 'missing request body' })
         };
+
+        if (process.env.STAGE === 'dev') console.log(response);
+        return response;
     }
 
     const body: RequestBody = JSON.parse(event.body);
@@ -32,19 +37,23 @@ export const handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayPr
     try {
         const factory = new CFFactory(body);
         const synth = factory.synth();
-        return {
+        const response = {
             statusCode: 200,
             body: JSON.stringify({
                 stack: synth.stacks[0].template
             })
         };
+        if (process.env.STAGE === 'dev') console.log(response);
+        return response;
     } catch (error) {
-        return {
+        const response = {
             statusCode: 500,
             body: JSON.stringify({
                 error: 'internal server error',
                 message: error instanceof Error ? error.message : 'an unknown error has occurred'
             })
         };
+        if (process.env.STAGE === 'dev') console.log(response);
+        return response;
     }
 };

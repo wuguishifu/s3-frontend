@@ -1,1 +1,0 @@
-export const Centered = ({ children }: { children: React.ReactNode }) => <div className="pb-14 h-full flex-1 flex flex-col justify-center items-center">{children}</div>;

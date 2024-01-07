@@ -1,12 +1,12 @@
+import { Button } from '@/components/ui/button';
+import { DialogClose, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogClose } from '@/components/ui/dialog';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import z from 'zod';
-import { Button } from '@/components/ui/button';
-import { useEffect, useMemo } from 'react';
 
 const formSchema = z.object({
     bucketName: z.string()
@@ -120,7 +120,7 @@ export default function BucketForm({
                         <DialogClose asChild>
                             <Button variant="secondary">Cancel</Button>
                         </DialogClose>
-                        <Button type='submit' variant='default'>Add Button</Button>
+                        <Button type='submit' variant='default'>Add Bucket</Button>
                     </div>
                 </form>
             </Form>

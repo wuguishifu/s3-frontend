@@ -44,7 +44,7 @@ export default function SignUp() {
                 style={{ boxShadow: '0 0 53px 4px rgba(0, 0, 0, 0.07)' }}>
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className='w-[310px] flex flex-col gap-4'>
-                        <h1 className='text-center'>welcome!</h1>
+                        <h1 className='text-center'>sign up</h1>
                         <div className='h-4' />
                         <FormField
                             control={form.control}
@@ -96,7 +96,7 @@ export default function SignUp() {
                         <div className='h-4' />
                         <Button type='submit'>Sign Up</Button>
                         <FormSeparator label='or' />
-                        <Link className={buttonVariants({ variant: 'secondary' })} href={'/login'}>Log In</Link>
+                        <Link className={buttonVariants({ variant: 'secondary' })} href={'/auth/login'}>Log In</Link>
                     </form>
                 </Form>
             </div>

@@ -17,6 +17,10 @@ import { useForm } from 'react-hook-form';
 import { Toaster, toast } from "sonner";
 import z from 'zod';
 import BucketForm from "./add-bucket";
+import useCreateTemplate from "../useCreateTemplate";
+
+import Spinner from 'react-activity/dist/Spinner';
+import 'react-activity/dist/Spinner.css';
 
 const formSchema = z.object({
     access: z.union([
@@ -56,6 +60,8 @@ const tooltips = {
 
 export default function AWSCloudFormationSetupForm() {
     const [stack, setStack] = useState<{} | null>(null);
+    const [loading, setLoading] = useState<boolean>(false);
+    const createTemplate = useCreateTemplate();
 
     const form = useForm<FormSchema>({
         resolver: zodResolver(formSchema),
@@ -86,16 +92,10 @@ export default function AWSCloudFormationSetupForm() {
 
     // TODO: add a progress bar
     async function onSubmit(values: FormSchema) {
-        let response, data;
+        setLoading(true);
+        let data;
         try {
-            response = await fetch('https://4jgbgydog9.execute-api.us-east-1.amazonaws.com/generate-s3-cf-stack', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(values)
-            });
-            data = await response.json();
+            data = await createTemplate(values);
         } catch (error) {
             console.error(error);
             if (error instanceof Error) {
@@ -104,6 +104,8 @@ export default function AWSCloudFormationSetupForm() {
                 toast.error('An unknown error has occurred');
             }
             return;
+        } finally {
+            setLoading(false);
         }
         if (data.error) {
             console.error(data);
@@ -397,7 +399,10 @@ export default function AWSCloudFormationSetupForm() {
                         </FormLabel>
                         <p className='w-full opacity-50 my-0'>Once you're done, you can click "Create Configuration File" below to download a CloudFormation template. Deploying this CloudFormation Stack in your AWS account will give you a set of keys that you can use to give Bucket Store access to your Amazon S3 Buckets according to this spec.</p>
                         <div className="w-full flex flex-col items-start py-8 gap-2">
-                            <Button type="submit">Create Configuration File</Button>
+                            <div className="w-full flex flex-row items-center gap-2">
+                                <Button type="submit">Create Configuration File</Button>
+                                {loading && <Spinner />}
+                            </div>
                             {stack && (
                                 <div className="w-full flex flex-row items-center justify-start gap-2">
                                     <Button type="button" variant="outline" onClick={onDownload}>Download</Button>

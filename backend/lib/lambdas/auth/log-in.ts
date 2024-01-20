@@ -1,7 +1,8 @@
 import { DynamoDBClient, GetItemCommand } from '@aws-sdk/client-dynamodb';
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from "aws-lambda";
 import bcrypt from 'bcryptjs';
-import { generateJwt } from '../../jwt';
+import { generateJwt } from '@/utils/jwt';
+import { serializeCookie } from '@/utils/cookies';
 
 const client = new DynamoDBClient({ region: process.env.REGION });
 const USERS_TABLE = process.env.USERS_TABLE;
@@ -83,9 +84,15 @@ export const handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayPr
         return response;
     }
 
+    const cookieHeader = serializeCookie(token);
+
     const response = {
         statusCode: 200,
-        body: JSON.stringify({ token })
+        headers: {
+            'Set-Cookie': cookieHeader,
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ id: email })
     };
     if (DEV) console.log(response);
     return response;

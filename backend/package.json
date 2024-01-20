@@ -14,11 +14,13 @@
     "dev": "npm run dev:synth && npm run dev:deploy",
     "prod:synth": "cross-env STAGE=prod cdk synth --profile bo",
     "prod:deploy": "cross-env STAGE=prod cdk deploy --profile bo",
-    "prod": "npm run prod:synth && npm run prod:deploy"
+    "prod": "npm run prod:synth && npm run prod:deploy",
+    "keys:generate": "ts-node bin/generate-keys.ts"
   },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.131",
     "@types/bcryptjs": "^2.4.6",
+    "@types/cookie": "^0.6.0",
     "@types/jest": "^29.5.8",
     "@types/jsonwebtoken": "^9.0.5",
     "@types/node": "20.9.1",
@@ -37,6 +39,7 @@
     "aws-lambda": "^1.0.7",
     "bcryptjs": "^2.4.3",
     "constructs": "^10.0.0",
+    "cookie": "^0.6.0",
     "dotenv": "^16.3.1",
     "jsonwebtoken": "^9.0.2",
     "source-map-support": "^0.5.21",

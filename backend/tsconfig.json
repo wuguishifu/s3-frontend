@@ -23,7 +23,12 @@
     "strictPropertyInitialization": false,
     "typeRoots": [
       "./node_modules/@types"
-    ]
+    ],
+    "paths": {
+      "@/*": [
+        "./lib/*"
+      ]
+    }
   },
   "exclude": [
     "node_modules",

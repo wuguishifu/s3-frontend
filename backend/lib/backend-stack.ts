@@ -15,6 +15,7 @@ export class BackendStack extends cdk.Stack {
 
     readonly signupLambda: lambdaNodejs.NodejsFunction;
     readonly loginLambda: lambdaNodejs.NodejsFunction;
+    readonly authenticationLambda: lambdaNodejs.NodejsFunction;
 
     constructor(scope: Construct, id: string, props?: cdk.StackProps) {
         super(scope, id, props);
@@ -36,8 +37,10 @@ export class BackendStack extends cdk.Stack {
                     apigatewayv2.CorsHttpMethod.OPTIONS
                 ],
                 allowOrigins: [
-                    '*'
-                ]
+                    'http://localhost:3000',
+                    'http://localhost:5173'
+                ],
+                allowCredentials: true
             }
         });
 
@@ -75,6 +78,7 @@ export class BackendStack extends cdk.Stack {
             environment: {
                 REGION: this.region,
                 USERS_TABLE: this.usersTable.tableName,
+                STAGE: STAGE,
                 PRIVATE_KEY: atob(process.env.PRIVATE_KEY!),
                 PUBLIC_KEY: atob(process.env.PUBLIC_KEY!),
                 PRIVATE_KEY_PASSPHRASE
@@ -88,6 +92,20 @@ export class BackendStack extends cdk.Stack {
             environment: {
                 REGION: this.region,
                 USERS_TABLE: this.usersTable.tableName,
+                STAGE: STAGE,
+                PRIVATE_KEY: atob(process.env.PRIVATE_KEY!),
+                PUBLIC_KEY: atob(process.env.PUBLIC_KEY!),
+                PRIVATE_KEY_PASSPHRASE
+            }
+        });
+
+        this.authenticationLambda = new lambdaNodejs.NodejsFunction(this, `BucketStoreAuthenticationLambda-${STAGE}`, {
+            entry: `${__dirname}/lambdas/auth/authenticate.ts`,
+            handler: 'handler',
+            runtime: lambda.Runtime.NODEJS_18_X,
+            environment: {
+                REGION: this.region,
+                STAGE: STAGE,
                 PRIVATE_KEY: atob(process.env.PRIVATE_KEY!),
                 PUBLIC_KEY: atob(process.env.PUBLIC_KEY!),
                 PRIVATE_KEY_PASSPHRASE
@@ -113,6 +131,15 @@ export class BackendStack extends cdk.Stack {
                 `BucketStoreLoginLambda-${STAGE}`,
                 this.loginLambda
             )
+        });
+
+        this.api.addRoutes({
+            path: '/auth/authenticate',
+            methods: [apigatewayv2.HttpMethod.GET],
+            integration: new integrations.HttpLambdaIntegration(
+                `BucketStoreAuthenticationLambda-${STAGE}`,
+                this.authenticationLambda
+            ),
         });
     }
 };

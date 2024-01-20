@@ -21,7 +21,7 @@ type Decoded = {
     email: string;
 };
 
-export function validateJwt(token: string): Promise<Decoded> {
+export async function validateJwt(token: string): Promise<Decoded> {
     return new Promise<Decoded>((resolve) => {
         jwt.verify(token, process.env.PUBLIC_KEY!, { algorithms: ['RS256'] }, (error, decoded) => {
             if (error) throw error;

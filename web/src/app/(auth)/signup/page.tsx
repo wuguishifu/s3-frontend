@@ -93,10 +93,10 @@ export default function SignUp() {
     return (
         <main className='w-full h-full flex items-center justify-center'>
             <div className='w-[886px] h-[648px] rounded-xl overflow-hidden flex flex-row items-center float'>
-                <div className="flex flex-col h-full relative flex-[334]" style={{ backgroundColor: '#E3EFFF' }}>
+                <div className="flex flex-col h-full relative flex-[334]" style={{ backgroundColor: '#cbe1ff' }}>
                     <img src='/signup.svg' style={{ position: 'absolute', overflow: 'hidden', right: -86, top: 224, width: 420, height: 256 }} className="max-w-none max-h-none" alt='sign up graphic' />
                 </div>
-                <div className='flex flex-col items-center justify-center overflow-hidden flex-[532] h-[648px]'>
+                <div className='flex flex-col items-center justify-center overflow-hidden flex-[532] h-[648px] bg-white'>
                     <Form {...form}>
                         <form onSubmit={form.handleSubmit(onSubmit)} className='w-[310px] flex flex-col gap-4'>
                             <h1 className='text-center'>sign up</h1>

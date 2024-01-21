@@ -14,7 +14,7 @@ export default function Navbar() {
     const { currentUser, hasCheckedAuth, logout } = useAuth();
 
     return (
-        <div className="w-full flex flex-row items-center px-4 py-2">
+        <nav className="w-full flex flex-row items-center px-4 py-2">
             <Link href='/'><h1 className="m-0">Bucket Store</h1></Link>
             <div className="flex-1" />
             {currentUser ? (
@@ -48,6 +48,6 @@ export default function Navbar() {
                     ? <Link href='/login' className={buttonVariants({ variant: 'default' })}>Log In</Link>
                     : <div className='w-10 h-10 flex items-center justify-center'><Spinner size={20} /></div>
             )}
-        </div>
+        </nav>
     );
 };

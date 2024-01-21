@@ -93,7 +93,7 @@ export default function LogIn() {
     return (
         <main className='w-full h-full flex items-center justify-center'>
             <div className='w-[886px] h-[648px] rounded-xl overflow-hidden flex flex-row items-center float'>
-                <div className='flex flex-col items-center justify-center overflow-hidden flex-[532] h-full'>
+                <div className='flex flex-col items-center justify-center overflow-hidden flex-[532] h-full bg-white'>
                     <Form {...form}>
                         <form onSubmit={form.handleSubmit(onSubmit)} className='w-[310px] flex flex-col gap-4'>
                             <h1 className='text-center'>log in</h1>
@@ -159,7 +159,7 @@ export default function LogIn() {
                         </form>
                     </Form>
                 </div>
-                <div className="flex flex-col h-full relative flex-[334]" style={{ backgroundColor: '#E3EFFF' }}>
+                <div className="flex flex-col h-full relative flex-[334]" style={{ backgroundColor: '#cbe1ff' }}>
                     <img src='/login.svg' style={{ position: 'absolute', overflow: 'hidden', right: -110, top: 235, width: 531, height: 317 }} className="max-w-none max-h-none" alt='login graphic' />
                 </div>
             </div>

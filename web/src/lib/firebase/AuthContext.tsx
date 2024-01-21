@@ -1,6 +1,7 @@
-import { ReactNode, createContext, useContext, useEffect, useState } from "react";
+import { GoogleAuthProvider, User, UserCredential, createUserWithEmailAndPassword, onAuthStateChanged, sendPasswordResetEmail, signInWithEmailAndPassword, signInWithPopup, signOut } from 'firebase/auth';
+import { ReactNode, createContext, useContext, useEffect, useRef, useState } from "react";
+import { toast } from 'sonner';
 import { auth } from './';
-import { User, createUserWithEmailAndPassword, sendPasswordResetEmail, signInWithEmailAndPassword, signOut, onAuthStateChanged, UserCredential, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 
 const AuthContext = createContext({} as AuthContext);
 
@@ -21,6 +22,26 @@ export function useAuth() {
 export function AuthProvider({ children }: { children: ReactNode }): JSX.Element {
     const [currentUser, setCurrentUser] = useState<User | null>(null);
     const [hasCheckedAuth, setHasCheckedAuth] = useState(false);
+
+    const timeout = useRef<NodeJS.Timeout | null>(null);
+
+    useEffect(() => {
+        if (hasCheckedAuth && timeout.current) {
+            clearTimeout(timeout.current);
+            timeout.current = null;
+        }
+    }, [hasCheckedAuth]);
+
+    useEffect(() => {
+        timeout.current = setTimeout(() => toast.error('Failed to reach server. Please refresh the page.'), 1500);
+
+        return () => {
+            if (timeout.current) {
+                clearTimeout(timeout.current);
+                timeout.current = null;
+            }
+        }
+    }, []);
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, user => {

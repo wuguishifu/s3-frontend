@@ -1,6 +1,7 @@
 // must be in this order, defaults overrides globals
-import "./defaults.css";
 import "./globals.css";
+
+import "./defaults.css";
 
 import { cn } from "@/lib/utils";
 import type { Metadata } from "next";
@@ -19,7 +20,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     return (
         <Providers>
             <html lang="en">
-                <body className={cn(nunito.className, 'h-screen flex flex-col')}>
+                <body className={cn(nunito.className, 'h-screen flex flex-col bg-primary-foreground')}>
                     <Toaster richColors />
                     {children}
                 </body>

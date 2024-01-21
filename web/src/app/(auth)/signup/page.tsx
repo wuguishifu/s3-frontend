@@ -22,18 +22,18 @@ const formSchema = z.object({
     password: z.string()
         .min(6, { message: 'must be at least 6 characters.' })
         .max(128, { message: 'must be at most 128 characters.' }),
-})
+});
 
-type FormSchema = z.infer<typeof formSchema>;
+type FormSchem = z.infer<typeof formSchema>;
 
-export default function LogIn() {
+export default function SignUp() {
     const [passwordVisible, setPasswordVisible] = useState(false);
     const togglePasswordVisibility = () => setPasswordVisible(b => !b);
     const router = useRouter();
 
-    const { login, signInWithGoogle } = useAuth();
+    const { signup, signInWithGoogle } = useAuth();
 
-    const form = useForm<FormSchema>({
+    const form = useForm<FormSchem>({
         resolver: zodResolver(formSchema),
         defaultValues: {
             email: '',
@@ -41,19 +41,19 @@ export default function LogIn() {
         },
     });
 
-    async function onSubmit(values: FormSchema) {
+    async function onSubmit(values: FormSchem) {
         try {
-            await login(values.email, values.password);
-            toast.success('Logged in successfully.');
+            await signup(values.email, values.password);
+            toast.success('Account created successfully. You are now logged in.');
             router.push('/');
         } catch (error) {
             if (error instanceof FirebaseError) {
                 switch (error.code) {
-                    case AuthErrorCodes.INVALID_LOGIN_CREDENTIALS:
-                        form.setError('email', { message: 'Incorrect email or password.' });
+                    case AuthErrorCodes.EMAIL_EXISTS:
+                        form.setError('email', { message: 'email already exists.' });
                         break;
-                    case AuthErrorCodes.USER_DISABLED:
-                        form.setError('email', { message: 'account disabled.' });
+                    case AuthErrorCodes.WEAK_PASSWORD:
+                        form.setError('password', { message: 'password is too weak.' });
                         break;
                     default:
                         toast.error(error.code);
@@ -93,10 +93,13 @@ export default function LogIn() {
     return (
         <main className='w-full h-full flex items-center justify-center'>
             <div className='w-[886px] h-[648px] rounded-xl overflow-hidden flex flex-row items-center float'>
-                <div className='flex flex-col items-center justify-center overflow-hidden flex-[532] h-full'>
+                <div className="flex flex-col h-full relative flex-[334]" style={{ backgroundColor: '#E3EFFF' }}>
+                    <img src='/signup.svg' style={{ position: 'absolute', overflow: 'hidden', right: -86, top: 224, width: 420, height: 256 }} className="max-w-none max-h-none" alt='sign up graphic' />
+                </div>
+                <div className='flex flex-col items-center justify-center overflow-hidden flex-[532] h-[648px]'>
                     <Form {...form}>
                         <form onSubmit={form.handleSubmit(onSubmit)} className='w-[310px] flex flex-col gap-4'>
-                            <h1 className='text-center'>log in</h1>
+                            <h1 className='text-center'>sign up</h1>
                             <div className='h-4' />
                             <FormField
                                 control={form.control}
@@ -145,21 +148,17 @@ export default function LogIn() {
                                     </FormItem>
                                 )}
                             />
-                            <Link href='/auth/forgot-password' className='hover:underline underline-offset-4'>Forgot your password?</Link>
                             <div className='h-4' />
-                            <Button type='submit'>Log In</Button>
+                            <Button type='submit'>Sign Up</Button>
                             <FormSeparator label='or' />
                             <Button type='button' variant='secondary' onClick={googleLogin}>Log In with Google</Button>
-                            <p className='m-0'>Need an account?{' '}
-                                <Link className='hover:underline underline-offset-4' href='/auth/signup'>
-                                    Sign up.
+                            <p className='m-0'>Already have an account?{' '}
+                                <Link className='hover:underline underline-offset-4' href='/login'>
+                                    Log in.
                                 </Link>
                             </p>
                         </form>
                     </Form>
-                </div>
-                <div className="flex flex-col h-full relative flex-[334]" style={{ backgroundColor: '#E3EFFF' }}>
-                    <img src='/login.svg' style={{ position: 'absolute', overflow: 'hidden', right: -110, top: 235, width: 531, height: 317 }} className="max-w-none max-h-none" alt='login graphic' />
                 </div>
             </div>
         </main>

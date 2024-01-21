@@ -6,17 +6,18 @@ import 'react-activity/dist/Spinner.css';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { useAuth } from "@/lib/firebase/AuthContext";
+import { LogOut, Settings } from 'lucide-react';
 import Link from "next/link";
 import { buttonVariants } from "../ui/button";
-import { LogOut, Settings } from 'lucide-react';
 
 export default function Navbar() {
     const { currentUser, hasCheckedAuth, logout } = useAuth();
 
     return (
-        <nav className="w-full flex flex-row items-center px-4 py-2">
+        <nav className="w-full flex flex-row items-center px-4 py-2 gap-4 bg-white border-b border-slate-200">
             <Link href='/'><h1 className="m-0">Bucket Store</h1></Link>
             <div className="flex-1" />
+            <Link href='/buckets' className={buttonVariants({ variant: 'ghost' })}>Buckets</Link>
             {currentUser ? (
                 <DropdownMenu>
                     <DropdownMenuTrigger>

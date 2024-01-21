@@ -1,13 +1,13 @@
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-    title: 'Bucket Store | Settings'
+    title: 'Bucket Store | Buckets'
 };
 
-export default function Settings() {
+export default function Buckets() {
     return (
         <main>
-            <h1>Settings</h1>
+            <h1>My Buckets</h1>
         </main>
     );
 };

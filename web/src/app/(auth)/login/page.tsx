@@ -15,6 +15,7 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import z from 'zod';
+import { useSearchParams } from 'next/navigation';
 
 const formSchema = z.object({
     email: z.string()
@@ -31,6 +32,9 @@ export default function LogIn() {
     const togglePasswordVisibility = () => setPasswordVisible(b => !b);
     const router = useRouter();
 
+    const searchParams = useSearchParams();
+    const next = searchParams.get('next');
+
     const { login, signInWithGoogle } = useAuth();
 
     const form = useForm<FormSchema>({
@@ -45,7 +49,8 @@ export default function LogIn() {
         try {
             await login(values.email, values.password);
             toast.success('Logged in successfully.');
-            router.push('/');
+            if (next) router.push(next ?? '/');
+            else router.push('/');
         } catch (error) {
             if (error instanceof FirebaseError) {
                 switch (error.code) {
@@ -71,7 +76,8 @@ export default function LogIn() {
         try {
             await signInWithGoogle();
             toast.success('Logged in successfully.');
-            router.push('/');
+            if (next) router.push(next ?? '/');
+            else router.push('/');
         } catch (error) {
             if (error instanceof FirebaseError) {
                 switch (error.code) {
@@ -152,7 +158,7 @@ export default function LogIn() {
                             <FormSeparator label='or' />
                             <Button type='button' variant='secondary' onClick={googleLogin}>Log In with Google</Button>
                             <p className='m-0'>Need an account?{' '}
-                                <Link className='hover:underline underline-offset-4' href='/signup'>
+                                <Link className='hover:underline underline-offset-4' href={`/signup${next ? `?next=${encodeURIComponent(next ?? '/')}` : ''}`}>
                                     Sign up.
                                 </Link>
                             </p>

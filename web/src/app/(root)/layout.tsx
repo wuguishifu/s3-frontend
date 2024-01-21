@@ -4,7 +4,7 @@ export default function DashboardLayout({ children }: Readonly<{ children: React
     return (
         <>
             <Navbar />
-            <div className="flex-1">
+            <div className="flex-1 px-4">
                 {children}
             </div>
         </>

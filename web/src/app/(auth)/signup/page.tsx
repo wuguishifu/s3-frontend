@@ -10,7 +10,7 @@ import { FirebaseError } from 'firebase/app';
 import { AuthErrorCodes } from 'firebase/auth';
 import { Eye, EyeOff } from 'lucide-react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
@@ -31,6 +31,9 @@ export default function SignUp() {
     const togglePasswordVisibility = () => setPasswordVisible(b => !b);
     const router = useRouter();
 
+    const searchParams = useSearchParams();
+    const next = searchParams.get('next');
+
     const { signup, signInWithGoogle } = useAuth();
 
     const form = useForm<FormSchem>({
@@ -45,7 +48,8 @@ export default function SignUp() {
         try {
             await signup(values.email, values.password);
             toast.success('Account created successfully. You are now logged in.');
-            router.push('/');
+            if (next) router.push(next ?? '/');
+            else router.push('/');
         } catch (error) {
             if (error instanceof FirebaseError) {
                 switch (error.code) {
@@ -71,7 +75,8 @@ export default function SignUp() {
         try {
             await signInWithGoogle();
             toast.success('Logged in successfully.');
-            router.push('/');
+            if (next) router.push(next ?? '/');
+            else router.push('/');
         } catch (error) {
             if (error instanceof FirebaseError) {
                 switch (error.code) {
@@ -153,7 +158,7 @@ export default function SignUp() {
                             <FormSeparator label='or' />
                             <Button type='button' variant='secondary' onClick={googleLogin}>Log In with Google</Button>
                             <p className='m-0'>Already have an account?{' '}
-                                <Link className='hover:underline underline-offset-4' href='/login'>
+                                <Link className='hover:underline underline-offset-4' href={`/login${next ? `?next=${encodeURIComponent(next ?? '/')}` : ''}`}>
                                     Log in.
                                 </Link>
                             </p>

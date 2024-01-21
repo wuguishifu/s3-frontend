@@ -1,3 +1,7 @@
+.float {
+    box-shadow: 0 0 53px 4px rgba(0, 0, 0, 0.07);
+}
+
 html {
     font-family: 'Nunito Variable', sans-serif;
 }

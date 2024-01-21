@@ -1,8 +1,12 @@
-import type { Metadata } from "next";
-import { Nunito } from "next/font/google";
+// must be in this order, defaults overrides globals
 import "./globals.css";
 import "./defaults.css";
+
 import { cn } from "@/lib/utils";
+import type { Metadata } from "next";
+import { Nunito } from "next/font/google";
+import { Providers } from "./providers";
+import { Toaster } from "sonner";
 
 const nunito = Nunito({ subsets: ["latin"] });
 
@@ -13,8 +17,13 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
     return (
-        <html lang="en">
-            <body className={cn(nunito.className, 'h-screen')}>{children}</body>
-        </html>
+        <Providers>
+            <html lang="en">
+                <body className={cn(nunito.className, 'h-screen')}>
+                    <Toaster richColors />
+                    {children}
+                </body>
+            </html>
+        </Providers>
     );
 };

@@ -67,12 +67,12 @@ export class CFSchema extends cdk.Stack {
 
         // create the access keys
         const accessKey = new iam.AccessKey(this, 'BucketStoreAccessKey', { user });
-        const secretKey = new secretsmanager.Secret(this, 'BucketStoreSecretKey', {
+        new secretsmanager.Secret(this, 'BucketStoreSecretKey', {
             secretStringValue: accessKey.secretAccessKey
         });
 
         // create the outputs
         new cdk.CfnOutput(this, 'BucketStoreAccessKeyId', { value: accessKey.accessKeyId });
-        new cdk.CfnOutput(this, 'BucketStoreSecretAccessKey', { value: secretKey.secretValue.toString() });
+        new cdk.CfnOutput(this, 'BucketStoreSecretAccessKey', { value: accessKey.secretAccessKey.toString() });
     }
 };

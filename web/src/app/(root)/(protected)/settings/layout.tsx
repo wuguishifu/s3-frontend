@@ -1,6 +1,6 @@
 'use client';
 
-import SettingsNavbar from "@/app/(root)/(protected)/settings/navbar";
+import SettingsNavbar from "@/app/(root)/(protected)/settings/settings-navbar";
 
 export default function SettingsLayout({ children }: { children: Readonly<React.ReactNode> }) {
     return (

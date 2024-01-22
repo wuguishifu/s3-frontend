@@ -22,9 +22,14 @@ const sections: Section[] = [
         sectionName: 'Buckets',
         links: [
             {
-                href: '/settings/aws',
+                href: '/settings/aws/configure',
                 label: 'Configure AWS',
-                highlightFn: (pathname: string) => pathname.startsWith('/settings/aws'),
+                highlightFn: (pathname: string) => pathname.startsWith('/settings/aws/configure'),
+            },
+            {
+                href: '/settings/aws/credentials',
+                label: 'Credentials',
+                highlightFn: (pathname: string) => pathname.startsWith('/settings/aws/credentials'),
             }
         ]
     }

@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import sections from "./navbar-def";
+import sections from "./settings-def";
 
 const focusedLinkClass = 'font-bold opacity-100';
 const unfocusedLinkClass = 'opacity-70';

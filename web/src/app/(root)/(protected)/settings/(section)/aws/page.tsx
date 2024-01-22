@@ -1,67 +1,69 @@
-import SettingsSection from "@/components/settings/SettingsSection";
 import { buttonVariants } from "@/components/ui/button";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { cn } from "@/lib/utils";
 import Link from "next/link";
-import AWSCloudFormationSetupForm from "./cloudformation";
 
 export default function AWSSetup() {
     return (
-        <>
-            <SettingsSection className="justify-center" id="setup">
-                <div className="max-w-screen-lg px-4">
-                    <h1 className="text-center">AWS Setup</h1>
-                    <p className="mb-0">You can use this tool to configure your AWS account for Bucket Store, or you can manually configure in your AWS settings. Bucket Store requires access keys with the following IAM actions:</p>
-                    <ul className="list-disc px-8">
-                        <li>s3:ListBucket<span className="text-black/50"> - used to list all items in a folder</span></li>
-                        <li>s3:GetObject<span className="text-black/50"> - used to get a specific file</span></li>
-                        <li>s3:PutObject<span className="text-black/50"> - used to upload a file</span></li>
-                        <li>s3:DeleteObject<span className="text-black/50"> - used to delete a file</span></li>
-                        <li>s3:ListAllMyBuckets<span className="text-black/50"> - used to list all folders</span></li>
-                        <li>s3:GetBucketWebsite<span className="text-black/50"> - used to get an access point URL for a specific bucket*</span></li>
-                        <li>s3:CreateBucket (optional)<span className="text-black/50"> - used to create root level folders</span></li>
-                        <li>s3:DeleteBucket (optional)<span className="text-black/50"> - used to delete root level folders</span></li>
-                    </ul>
-                    <p className="text-black/50 mt-0">*this is required because buckets with specified URL endpoints are only accessible through them.</p>
-                    <p className="mb-0">This tool has two options for creating credentials with the above specs:</p>
-                    <ol className="list-decimal px-8">
-                        <li>Creating a general IAM role for access all S3 buckets in your AWS account.</li>
-                        <li>Creating an IAM role for accessing specified buckets in your AWS account. This option is better for privacy, but you will not be able to create root level folders*.</li>
-                    </ol>
-                    <p className="text-black/50 mt-0">*You can manually add folders through the AWS console by adding the S3 resource to the IAM role.</p>
-                    <h1 className="text-center">Usage</h1>
-                    <p>Clicking "Get Started" below will take you through the process of setting up an IAM role and key credentials in your AWS account. The output of this GUI tool is a CloudFormation Stack template file. You will then need to use this template file in your AWS account to generate the role and credentials.</p>
-                    <p>For your privacy, none of the information you enter into this GUI will be saved anywhere (remote or local).</p>
-                    <div className="flex flex-row items-center justify-center gap-4 mb-8">
-                        <TooltipProvider>
-                            <Tooltip>
-                                <TooltipTrigger asChild>
-                                    <Link
-                                        href="https://docs.aws.amazon.com/service-authorization/latest/reference/list_amazons3.html"
-                                        className={cn(buttonVariants({ variant: 'secondary' }), 'w-56')}
-                                        target="_blank">
-                                        Amazon S3 Docs
-                                    </Link>
-                                </TooltipTrigger>
-                                <TooltipContent>
-                                    <p className="my-0">Read the Amazon S3 docs for more information about IAM actions.</p>
-                                </TooltipContent>
-                            </Tooltip>
-                        </TooltipProvider>
+        <div className="justify-center" id="setup">
+            <div className="max-w-screen-md px-4 lg:max-w-screen-xl">
+                <h1>Setting up your AWS account</h1>
+                <p>In order for Bucket Store to access Amazon S3 buckets in your AWS account, you will need to create an access key. Access keys allow external applications, such as Bucket Store, to access resources in your AWS account. Bucket Store requires the following IAM actions:</p>
+                <ul className="list-disc px-8">
+                    <li>s3:ListBucket<span className="text-muted-foreground"> - used to list all items in a folder</span></li>
+                    <li>s3:GetObject<span className="text-muted-foreground"> - used to get a specific file</span></li>
+                    <li>s3:PutObject<span className="text-muted-foreground"> - used to upload a file</span></li>
+                    <li>s3:DeleteObject<span className="text-muted-foreground"> - used to delete a file</span></li>
+                    <li>s3:ListAllMyBuckets<span className="text-muted-foreground"> - used to list all folders</span></li>
+                    <li>s3:GetBucketWebsite<span className="text-muted-foreground"> - used to get an access point URL for a specific bucket*</span></li>
+                    <li>s3:CreateBucket (optional)<span className="text-muted-foreground"> - used to create root level folders</span></li>
+                    <li>s3:DeleteBucket (optional)<span className="text-muted-foreground"> - used to delete root level folders</span></li>
+                </ul>
+                <p className="text-muted-foreground mt-0">*this is required because buckets with specified URL endpoints are only accessible through them.</p>
+                <p>
+                    You can either create an IAM role for general access to your Amazon S3 buckets or create a restricted role that will only be able to access specific buckets. Making a general key will allow Bucket Store to create and delete buckets and will have access to every bucket in your Amazon S3. If you have specific buckets you do not want to show up in Bucket Store, it is recommended to use a restricted IAM role. You can view more information about IAM credentials in the{' '}
+                    <Link
+                        href="https://docs.aws.amazon.com/service-authorization/latest/reference/list_amazons3.html"
+                        className="underline underline-offset-4"
+                        target="_blank">
+                        Amazon S3 Docs
+                    </Link>.
+                </p>
+                <p>There are two options for setting up an access key: using the Bucket Store Formation tool or manually through your AWS account.</p>
+                <h2>Set up with Formation</h2>
+                <p>Formation is a Bucket Store GUI tool that can be used to create an AWS CloudFormation template to generate resources for your AWS account. You can access it by clicking the "Create Template" button below.</p>
+                <div className="flex flex-row items-center justify-center">
+                    <Link
+                        href="/formation"
+                        target="_blank"
+                        className={cn(buttonVariants({ variant: "default" }), 'w-56')}>
+                        Create Template
+                    </Link>
+                </div>
+                <p>Once you download the template, you can deploy it into AWS through the AWS CloudFormation console. Here are the general steps on how to do this:</p>
+                <ol className="list-decimal px-8">
+                    <li>
+                        Navigate to the{' '}
                         <Link
-                            href="#configure"
-                            className={cn(buttonVariants({ variant: "default" }), 'w-56')}>
-                            Get Started
+                            href='https://console.aws.amazon.com/cloudformation'
+                            target="_blank"
+                            className="underline underline-offset-4">
+                            AWS CloudFormation
                         </Link>
-                    </div>
-                </div>
-            </SettingsSection>
-            <SettingsSection className="justify-center" id="configure">
-                <div className="px-4 w-full items-center flex flex-col">
-                    <h1 className="text-center">Configure</h1>
-                    <AWSCloudFormationSetupForm />
-                </div>
-            </SettingsSection>
-        </>
+                        {' '}console.
+                    </li>
+                    <li>Click the "Create stack" button.</li>
+                    <li>Select "Upload a template file" and upload the template file you downloaded from Formation.</li>
+                    <li>Click "Next" and enter a stack name. This can be anything you want, but it is recommended to use something like "bucket-store-formation."</li>
+                    <li>Configure the stack options if you'd like, or keep them default. Click on "Next" and make sure to check "I acknowledge that AWS CloudFormation might create IAM resources."</li>
+                    <li>Click "Submit" and wait for the stack to be created.</li>
+                    <li>Click on the stack that was just created and go to the "Outputs" tab.</li>
+                    <li>Write down the "BucketStoreAccessKeyId" and "BucketStoreSecretAccessKey." This access key pair will allow Bucket Store to access S3 resources in your AWS account.</li>
+                    <li>Skip to the "Using your access key" section.</li>
+                </ol>
+                <h2>Manual Setup</h2>
+                <p>If you are familiar with AWS infrastructure, you can create an IAM role and user for access to your Amazon S3 buckets. Keep in mind, Bucket Store needs an access key with the IAM roles described above.</p>
+                <h2>Using your access key</h2>
+            </div>
+        </div>
     );
 };

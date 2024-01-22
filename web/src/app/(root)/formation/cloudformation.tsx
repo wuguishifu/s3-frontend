@@ -11,8 +11,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { exists } from "@/lib/utils";
 import { zodResolver } from '@hookform/resolvers/zod';
-import React, { useState } from "react";
-import { useForm } from 'react-hook-form';
+import React, { useCallback, useState } from "react";
+import { set, useForm } from 'react-hook-form';
 import { Toaster, toast } from "sonner";
 import z from 'zod';
 import BucketForm from "./add-bucket";
@@ -57,9 +57,9 @@ const tooltips = {
     DeleteBucket: 'Used to delete root level folders.'
 };
 
-
 export default function AWSCloudFormationSetupForm() {
     const [stack, setStack] = useState<{} | null>(null);
+    const [hasBeenModified, setHasBeenModified] = useState(false);
     const [loading, setLoading] = useState<boolean>(false);
 
     const form = useForm<FormSchema>({
@@ -89,9 +89,9 @@ export default function AWSCloudFormationSetupForm() {
         URL.revokeObjectURL(url);
     }
 
-    // TODO: add a progress bar
-    async function onSubmit(values: FormSchema) {
+    const onSubmit = useCallback(async (values: FormSchema) => {
         setLoading(true);
+        setStack(null);
         let response, data;
         try {
             response = await fetch(endpoints.generateS3CfStack, {
@@ -122,26 +122,32 @@ export default function AWSCloudFormationSetupForm() {
             setStack(data.stack);
             toast.success('Configuration file created!');
         }
-    }
+    }, []);
 
     function onAddBucket(bucketName: string, removalPolicy: FormSchema['buckets'][number]['removalPolicy']) {
         form.setValue('buckets', [...form.getValues('buckets'), { bucketName, removalPolicy }]);
+        setHasBeenModified(true);
     }
+
+    const resetForm = useCallback(() => {
+        form.reset();
+        setStack(null);
+        setHasBeenModified(false);
+    }, []);
 
     return (
         <>
             <Form {...form}>
-                <Toaster richColors />
-                <form onSubmit={form.handleSubmit(onSubmit)} className='flex flex-col items-center gap-4'>
+                <form onSubmit={form.handleSubmit(onSubmit)} className='flex flex-col items-center gap-4 pb-8'>
                     <FormField
                         control={form.control}
                         name='access'
                         render={({ field }) => (
                             <FormItem className='w-full'>
                                 <FormLabel>
-                                    <h2 className="my-0">Access Type</h2>
+                                    <h2>Access Type</h2>
                                 </FormLabel>
-                                <p className='w-full opacity-50 my-0'>Using general access will allow Bucket Store to read/write in any S3 bucket in your AWS account. It will also let you create or delete buckets through Bucket Store. Using restricted access will only allow Bucket Store to read/write in specified buckets. Use restricted access if you have other S3 buckets in your AWS account that you do not want accessible through Bucket Store.</p>
+                                <p className='w-full text-muted-foreground'>Using general access will allow Bucket Store to read/write in any S3 bucket in your AWS account. It will also let you create or delete buckets through Bucket Store. Using restricted access will only allow Bucket Store to read/write in specified buckets. Use restricted access if you have other S3 buckets in your AWS account that you do not want accessible through Bucket Store.</p>
                                 <Select
                                     onValueChange={(value: FormSchema['access']) => {
                                         if (value === 'restricted') {
@@ -149,8 +155,9 @@ export default function AWSCloudFormationSetupForm() {
                                             form.setValue('policies.DeleteBucket', false, { shouldTouch: true });
                                         }
                                         field.onChange(value);
+                                        setHasBeenModified(true);
                                     }}
-                                    defaultValue='general'>
+                                    value={field.value}>
                                     <SelectTrigger>
                                         <SelectValue placeholder="General" />
                                     </SelectTrigger>
@@ -162,11 +169,11 @@ export default function AWSCloudFormationSetupForm() {
                             </FormItem>
                         )}
                     />
-                    <div className="space-y-2">
+                    <div>
                         <FormLabel className="w-full">
-                            <h2 className="mb-0">IAM Policies</h2>
+                            <h2>IAM Policies</h2>
                         </FormLabel>
-                        <p className='w-full opacity-50 my-0'>These are policies that define what Bucket Store is allowed to do in your AWS account. Hover over a label to see the purpose of the policy. You can see more information about IAM policies <Link href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/s3-access-control.html" target="_blank" className="underline">here</Link>.</p>
+                        <p className='w-full text-muted-foreground'>These are policies that define what Bucket Store is allowed to do in your AWS account. Hover over a label to see the purpose of the policy. You can see more information about IAM policies <Link href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/s3-access-control.html" target="_blank" className="underline">here</Link>.</p>
                         <div className='flex flex-row w-full'>
                             <div className='flex flex-col gap-2 flex-1'>
                                 <div className='flex flex-row items-center gap-2'>
@@ -177,7 +184,7 @@ export default function AWSCloudFormationSetupForm() {
                                                 <label className='opacity-50 cursor-pointer'>ListBucket</label>
                                             </TooltipTrigger>
                                             <TooltipContent>
-                                                <p className='my-0 max-w-96'>{tooltips.ListBucket}</p>
+                                                <p className='max-w-96'>{tooltips.ListBucket}</p>
                                             </TooltipContent>
                                         </Tooltip>
                                     </TooltipProvider>
@@ -190,7 +197,7 @@ export default function AWSCloudFormationSetupForm() {
                                                 <label className='opacity-50 cursor-pointer'>GetObject</label>
                                             </TooltipTrigger>
                                             <TooltipContent>
-                                                <p className='my-0 max-w-96'>{tooltips.GetObject}</p>
+                                                <p className='max-w-96'>{tooltips.GetObject}</p>
                                             </TooltipContent>
                                         </Tooltip>
                                     </TooltipProvider>
@@ -203,7 +210,7 @@ export default function AWSCloudFormationSetupForm() {
                                                 <label className='opacity-50 cursor-pointer'>PutObject</label>
                                             </TooltipTrigger>
                                             <TooltipContent>
-                                                <p className='my-0 max-w-96'>{tooltips.PutObject}</p>
+                                                <p className='max-w-96'>{tooltips.PutObject}</p>
                                             </TooltipContent>
                                         </Tooltip>
                                     </TooltipProvider>
@@ -216,7 +223,7 @@ export default function AWSCloudFormationSetupForm() {
                                                 <label className='opacity-50 cursor-pointer'>DeleteObject</label>
                                             </TooltipTrigger>
                                             <TooltipContent>
-                                                <p className='my-0 max-w-96'>{tooltips.DeleteObject}</p>
+                                                <p className='max-w-96'>{tooltips.DeleteObject}</p>
                                             </TooltipContent>
                                         </Tooltip>
                                     </TooltipProvider>
@@ -231,7 +238,7 @@ export default function AWSCloudFormationSetupForm() {
                                                 <label className='opacity-50 cursor-pointer'>ListAllMyBuckets</label>
                                             </TooltipTrigger>
                                             <TooltipContent>
-                                                <p className='my-0 max-w-96'>{tooltips.ListAllMyBuckets}</p>
+                                                <p className='max-w-96'>{tooltips.ListAllMyBuckets}</p>
                                             </TooltipContent>
                                         </Tooltip>
                                     </TooltipProvider>
@@ -244,7 +251,7 @@ export default function AWSCloudFormationSetupForm() {
                                                 <label className='opacity-50 cursor-pointer'>GetBucketWebsite</label>
                                             </TooltipTrigger>
                                             <TooltipContent>
-                                                <p className='my-0 max-w-96'>{tooltips.GetBucketWebsite}</p>
+                                                <p className='max-w-96'>{tooltips.GetBucketWebsite}</p>
                                             </TooltipContent>
                                         </Tooltip>
                                     </TooltipProvider>
@@ -267,6 +274,7 @@ export default function AWSCloudFormationSetupForm() {
                                                     <Tooltip>
                                                         <TooltipTrigger asChild onClick={() => {
                                                             if (form.getValues('access') === 'restricted') return;
+                                                            setHasBeenModified(true);
                                                             form.setValue('policies.CreateBucket', !field.value)
                                                         }}>
                                                             <div className={form.getValues('access') === 'restricted' ? 'opacity-50' : 'cursor-pointer'}>
@@ -274,7 +282,7 @@ export default function AWSCloudFormationSetupForm() {
                                                             </div>
                                                         </TooltipTrigger>
                                                         <TooltipContent>
-                                                            <p className='my-0 max-w-96'>{tooltips.CreateBucket}</p>
+                                                            <p className='max-w-96'>{tooltips.CreateBucket}</p>
                                                         </TooltipContent>
                                                     </Tooltip>
                                                 </TooltipProvider>
@@ -300,6 +308,7 @@ export default function AWSCloudFormationSetupForm() {
                                                     <Tooltip>
                                                         <TooltipTrigger asChild onClick={() => {
                                                             if (form.getValues('access') === 'restricted') return;
+                                                            setHasBeenModified(true);
                                                             form.setValue('policies.DeleteBucket', !field.value)
                                                         }}>
                                                             <div className={form.getValues('access') === 'restricted' ? 'opacity-50' : 'cursor-pointer'}>
@@ -307,7 +316,7 @@ export default function AWSCloudFormationSetupForm() {
                                                             </div>
                                                         </TooltipTrigger>
                                                         <TooltipContent>
-                                                            <p className='my-0 max-w-96'>{tooltips.CreateBucket}</p>
+                                                            <p className='max-w-96'>{tooltips.CreateBucket}</p>
                                                         </TooltipContent>
                                                     </Tooltip>
                                                 </TooltipProvider>
@@ -323,16 +332,16 @@ export default function AWSCloudFormationSetupForm() {
                             render={({ field }) => (
                                 <FormItem className='w-full'>
                                     <FormLabel>
-                                        <h2 className="mb-0">New Buckets</h2>
+                                        <h2>New Buckets</h2>
                                     </FormLabel>
-                                    <p className='w-full opacity-50 my-0'>If you're using restricted access type, you will need to either specify buckets here or manually in your AWS account. Otherwise, Bucket Store will not be able to access any buckets within your AWS account.</p>
+                                    <p className='w-full text-muted-foreground'>If you're using restricted access type, you will need to either specify buckets here or manually in your AWS account. Otherwise, Bucket Store will not be able to access any buckets within your AWS account.</p>
                                     <DataTable
                                         columns={columns()}
                                         data={field.value as Bucket[] ?? []}
                                         rowSelection={rowSelection}
                                         setRowSelection={setRowSelection}
                                     />
-                                    <div className="flex flex-row items-center gap-2 justify-start">
+                                    <div className="flex flex-row items-center gap-2 justify-start pt-3">
                                         <Button type="button" onClick={() => setBucketDialogOpen(true)}>Add Bucket</Button>
                                         <AlertDialog>
                                             <AlertDialogTrigger asChild>
@@ -351,6 +360,7 @@ export default function AWSCloudFormationSetupForm() {
                                                         onClick={() => {
                                                             form.setValue('buckets', []);
                                                             setRowSelection({});
+                                                            setHasBeenModified(true);
                                                         }}
                                                         className={buttonVariants({ variant: 'destructive' })}>
                                                         Confirm
@@ -385,6 +395,7 @@ export default function AWSCloudFormationSetupForm() {
                                                                         .filter(exists)
                                                                 );
                                                                 setRowSelection({});
+                                                                setHasBeenModified(true);
                                                             }}
                                                             className={buttonVariants({ variant: 'destructive' })}>
                                                             Confirm
@@ -399,26 +410,29 @@ export default function AWSCloudFormationSetupForm() {
                             )}
                         />
                     </div>
-                    <div className="space-y-2">
+                    <div>
                         <FormLabel className="w-full">
-                            <h2 className="mb-0">Configuration File</h2>
+                            <h2>Configuration File</h2>
                         </FormLabel>
-                        <p className='w-full opacity-50 my-0'>Once you're done, you can click "Create Configuration File" below to download a CloudFormation template. Deploying this CloudFormation Stack in your AWS account will give you a set of keys that you can use to give Bucket Store access to your Amazon S3 Buckets according to this spec.</p>
-                        <div className="w-full flex flex-col items-start py-8 gap-2">
+                        <p className='w-full text-muted-foreground'>Once you're done, you can click "Create Configuration File" below to download a CloudFormation template. Deploying this CloudFormation Stack in your AWS account will give you a set of keys that you can use to give Bucket Store access to your Amazon S3 Buckets according to this spec.</p>
+                        <div className="w-full flex flex-col items-start gap-2">
                             <div className="w-full flex flex-row items-center gap-2">
                                 <Button type="submit">Create Configuration File</Button>
-                                {loading && <Spinner />}
+                                <Button type="button" variant="destructive" onClick={resetForm} disabled={!hasBeenModified}>Reset</Button>
                             </div>
-                            {stack && (
+                            {(stack || loading) && (
                                 <div className="w-full flex flex-row items-center justify-start gap-2">
-                                    <Button type="button" variant="outline" onClick={onDownload}>Download</Button>
-                                    <div>cloudformation-stack.json</div>
+                                    <Button type="button" variant="outline" onClick={onDownload} disabled={loading}>Download</Button>
+                                    {stack
+                                        ? <div>cloudformation-stack.json</div>
+                                        : <Spinner />
+                                    }
                                 </div>
                             )}
                         </div>
                     </div>
                 </form>
-            </Form >
+            </Form>
             <Dialog open={bucketDialogOpen} onOpenChange={setBucketDialogOpen}>
                 <BucketForm
                     existingBucketNames={form.getValues('buckets').map(bucket => bucket.bucketName)}

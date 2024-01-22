@@ -1,7 +1,7 @@
 // must be in this order, defaults overrides globals
 import "./globals.css";
-
-import "./defaults.css";
+import "./index.css";
+import "./scroll.css";
 
 import { cn } from "@/lib/utils";
 import type { Metadata } from "next";

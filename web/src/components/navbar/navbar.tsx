@@ -14,7 +14,7 @@ export default function Navbar() {
     const { currentUser, hasCheckedAuth, logout } = useAuth();
 
     return (
-        <nav className="w-full flex flex-row items-center px-4 py-2 gap-4 bg-white border-b border-slate-200">
+        <nav className="w-full flex justify-center px-4 md:px-8 py-2 gap-4 bg-white border-b border-slate-200 items-center">
             <Link href='/'><h1 className="m-0">Bucket Store</h1></Link>
             <div className="flex-1" />
             <Link href='/buckets' className={buttonVariants({ variant: 'ghost' })}>Buckets</Link>
@@ -32,7 +32,7 @@ export default function Navbar() {
                         <DropdownMenuLabel>{currentUser.email}</DropdownMenuLabel>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem asChild>
-                            <Link href='/settings'>
+                            <Link href='/settings/general'>
                                 <Settings className="mr-2 h-4 w-4" />
                                 <span>Settings</span>
                             </Link>

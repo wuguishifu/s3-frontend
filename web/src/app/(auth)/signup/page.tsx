@@ -97,7 +97,7 @@ export default function SignUp() {
 
     return (
         <main className='w-full h-full flex items-center justify-center'>
-            <div className='w-[886px] h-[648px] rounded-xl overflow-hidden flex flex-row items-center float'>
+            <div className='w-[886px] h-[648px] rounded-xl overflow-hidden flex flex-row items-center shadow-sm border border-slate-200'>
                 <div className="flex flex-col h-full relative flex-[334]" style={{ backgroundColor: '#cbe1ff' }}>
                     <img src='/signup.svg' style={{ position: 'absolute', overflow: 'hidden', right: -86, top: 224, width: 420, height: 256 }} className="max-w-none max-h-none" alt='sign up graphic' />
                 </div>

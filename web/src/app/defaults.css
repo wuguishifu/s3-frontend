@@ -4,6 +4,7 @@
 
 html {
     font-family: 'Nunito Variable', sans-serif;
+    scroll-behavior: smooth;
 }
 
 .code {

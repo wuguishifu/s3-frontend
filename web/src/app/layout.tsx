@@ -20,7 +20,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     return (
         <Providers>
             <html lang="en">
-                <body className={cn(nunito.className, 'h-screen flex flex-col bg-primary-foreground')}>
+                <body className={cn(nunito.className, 'h-screen flex flex-col bg-primary-foreground items-center')}>
                     <Toaster richColors />
                     {children}
                 </body>

@@ -28,7 +28,7 @@ export default function AWSSetup() {
                         Amazon S3 Docs
                     </Link>.
                 </p>
-                <p>There are two options for setting up an access key: using the Bucket Store Formation tool or manually through your AWS account.</p>
+                <p>There are two options for setting up an access key: using the Bucket Store Formation tool or manually through your AWS account. It is recommended to use the Bucket Store Formation tool, as this will ensure you don't make any errors during manual IAM credential setup — the AWS website isn't super easy to navigate.</p>
                 <h2>Set up with Formation</h2>
                 <p>Formation is a Bucket Store GUI tool that can be used to create an AWS CloudFormation template to generate resources for your AWS account. You can access it by clicking the "Create Template" button below.</p>
                 <div className="flex flex-row items-center justify-center">
@@ -39,7 +39,7 @@ export default function AWSSetup() {
                         Create Template
                     </Link>
                 </div>
-                <p>Once you download the template, you can deploy it into AWS through the AWS CloudFormation console. Here are the general steps on how to do this:</p>
+                <p>Once you download the template, you can deploy it into AWS through the AWS CloudFormation console. Here are the steps on how to do this:</p>
                 <ol className="list-decimal px-8">
                     <li>
                         Navigate to the{' '}
@@ -61,7 +61,36 @@ export default function AWSSetup() {
                     <li>Skip to the "Using your access key" section.</li>
                 </ol>
                 <h2>Manual Setup</h2>
-                <p>If you are familiar with AWS infrastructure, you can create an IAM role and user for access to your Amazon S3 buckets. Keep in mind, Bucket Store needs an access key with the IAM roles described above.</p>
+                <p>If you are familiar with AWS infrastructure, you can create an IAM role and user for access to your Amazon S3 buckets. Keep in mind, Bucket Store needs an access key with the IAM roles described above. Here are the steps on how to do this:</p>
+                <ol className="list-decimal px-8">
+                    <li>
+                        Navigate to the{' '}
+                        <Link
+                            href='https://console.aws.amazon.com/iam'
+                            target="_blank"
+                            className="underline underline-offset-4">
+                            AWS IAM
+                        </Link>
+                        {' '}console.
+                    </li>
+                    <li>Go to the "Policies" tab and click "Create policy."</li>
+                    <li>Select "S3" as the service.</li>
+                    <li>Under "List" enable "ListBucket" and "ListAllMyBuckets."</li>
+                    <li>Under "Read" enable "GetObject" and "GetBucketWebsite."</li>
+                    <li>Under "Write" enable "PutObject" and "DeleteObject." Optionally, enable "CreateBucket" and "DeleteBucket."</li>
+                    <li>Under "Resources" select "All" or select "Specific" and enter a list of ARNs for "bucket" and check "all" for "object".</li>
+                    <li>Click on "Next," add a policy name like "BucketStorePolicy," and click "Create."</li>
+                    <li>Go to the "Users" tab and click "Create user."</li>
+                    <li>Add a User name like "BucketStoreUser" and click "Next."</li>
+                    <li>Select "Attach policies directly," check the policy you just created, and click "Next."</li>
+                    <li>Click "Create user."</li>
+                    <li>Click on the user you just created and go to the "Security credentials" tab.</li>
+                    <li>Click on "Create access key."</li>
+                    <li>Select "Application running outside AWS" and click "Next."</li>
+                    <li>Click "Create access key."</li>
+                    <li>Write down the "Access key" and "Secret access key." This access key pair will allow Bucket Store to access S3 resources in your AWS account.</li>
+                    <li>Continue to the "Using your access key" section.</li>
+                </ol>
                 <h2>Using your access key</h2>
             </div>
         </div>

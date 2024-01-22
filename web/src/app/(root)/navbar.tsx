@@ -8,7 +8,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
 import { useAuth } from "@/lib/firebase/AuthContext";
 import { LogOut, Settings } from 'lucide-react';
 import Link from "next/link";
-import { buttonVariants } from "../ui/button";
+import { buttonVariants } from "../../components/ui/button";
 
 export default function Navbar() {
     const { currentUser, hasCheckedAuth, logout } = useAuth();

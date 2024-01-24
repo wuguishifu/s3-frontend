@@ -1,12 +1,14 @@
 'use client'
 
 import { AuthProvider } from "@/lib/firebase/AuthContext"
-import { Toaster } from "sonner";
+import { CredentialsProvider } from "@/lib/firebase/CredentialsContext";
 
 export const Providers = ({ children }: { children: React.ReactNode }) => {
     return (
         <AuthProvider>
-            {children}
+            <CredentialsProvider>
+                {children}
+            </CredentialsProvider>
         </AuthProvider>
     );
 };

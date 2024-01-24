@@ -59,6 +59,15 @@ export default function AWSSetup() {
                 <li>Write down the "BucketStoreAccessKeyId" and "BucketStoreSecretAccessKey." This access key pair will allow Bucket Store to access S3 resources in your AWS account.</li>
                 <li>Skip to the "Using your access key" section.</li>
             </ol>
+            <p>
+                You can find more information on the setup process{' '}
+                <Link
+                    href='https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/GettingStarted.Walkthrough.html'
+                    target="_blank"
+                    className="underline underline-offset-4">
+                    Here
+                </Link>.
+            </p>
             <h2>Manual Setup</h2>
             <p>If you are familiar with AWS infrastructure, you can create an IAM role and user for access to your Amazon S3 buckets. Keep in mind, Bucket Store needs an access key with the IAM roles described above. Here are the steps on how to do this:</p>
             <ol className="list-decimal px-8">
@@ -90,7 +99,26 @@ export default function AWSSetup() {
                 <li>Write down the "Access key" and "Secret access key." This access key pair will allow Bucket Store to access S3 resources in your AWS account.</li>
                 <li>Continue to the "Using your access key" section.</li>
             </ol>
+            <p>
+                You can find more information about IAM credentials{' '}
+                <Link
+                    href='https://docs.aws.amazon.com/IAM/latest/UserGuide/introduction.html'
+                    target="_blank"
+                    className="underline underline-offset-4">
+                    Here
+                </Link>.
+            </p>
             <h2>Using your access key</h2>
+            <p>
+                Once you have created an access key pair, navigate to the{' '}
+                <Link
+                    href={'/settings/aws/credentials'}
+                    target="_blank"
+                    className="underline underline-offset-4">
+                    Credentials
+                </Link>
+                {' '}tab and enter your access key and secret access key. Click "Save" and Bucket Store will attempt to connect to your AWS account. If the connection is successful, you will be able to see your buckets in the Buckets tab.
+            </p>
         </>
     );
 };

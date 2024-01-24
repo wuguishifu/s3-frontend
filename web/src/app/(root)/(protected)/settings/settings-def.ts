@@ -9,16 +9,6 @@ type Section = {
 
 const sections: Section[] = [
     {
-        sectionName: 'Account',
-        links: [
-            {
-                href: '/settings/general',
-                label: 'General',
-                highlightFn: (pathname: string) => pathname.startsWith('/settings/general'),
-            }
-        ]
-    },
-    {
         sectionName: 'Buckets',
         links: [
             {

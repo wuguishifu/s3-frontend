@@ -15,6 +15,9 @@ export async function POST(req: Request) {
         if (!data.stack) return NextResponse.json({ error: 'Error while creating stack.' });
         return NextResponse.json(data);
     } catch (error) {
-        return NextResponse.json({ error: 'Error while sending request.' });
+        return NextResponse.json({
+            error: 'Error while sending request.',
+            message: error instanceof Error ? error.message : 'Unknown error.'
+        });
     }
 };

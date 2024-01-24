@@ -118,7 +118,7 @@ export default function BucketForm({
                     />
                     <div className='w-full flex flex-row justify-end gap-4'>
                         <DialogClose asChild>
-                            <Button variant="secondary">Cancel</Button>
+                            <Button variant="outline">Cancel</Button>
                         </DialogClose>
                         <Button type='submit' variant='default'>Add Bucket</Button>
                     </div>

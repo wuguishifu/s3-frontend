@@ -11,13 +11,12 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { exists } from "@/lib/utils";
 import { zodResolver } from '@hookform/resolvers/zod';
+import Link from "next/link";
 import React, { useCallback, useState } from "react";
-import { set, useForm } from 'react-hook-form';
-import { Toaster, toast } from "sonner";
+import { useForm } from 'react-hook-form';
+import { toast } from "sonner";
 import z from 'zod';
 import BucketForm from "./add-bucket";
-import Link from "next/link";
-import { endpoints } from "@/lib/api/endpoints";
 
 import Spinner from 'react-activity/dist/Spinner';
 import 'react-activity/dist/Spinner.css';
@@ -90,6 +89,8 @@ export default function AWSCloudFormationSetupForm() {
     }
 
     const onSubmit = useCallback(async (values: FormSchema) => {
+        if (loading) return;
+
         setLoading(true);
         setStack(null);
 
@@ -114,7 +115,7 @@ export default function AWSCloudFormationSetupForm() {
 
         setStack(data.stack);
         return toast.success('Configuration file created!');
-    }, []);
+    }, [loading]);
 
     function onAddBucket(bucketName: string, removalPolicy: FormSchema['buckets'][number]['removalPolicy']) {
         form.setValue('buckets', [...form.getValues('buckets'), { bucketName, removalPolicy }]);
@@ -341,7 +342,7 @@ export default function AWSCloudFormationSetupForm() {
                                             </AlertDialogTrigger>
                                             <AlertDialogContent>
                                                 <AlertDialogHeader>
-                                                    <AlertDialogHeader>Clear new buckets?</AlertDialogHeader>
+                                                    Clear new buckets?
                                                     <AlertDialogDescription>
                                                         This will clear all new buckets. This cannot be undone.
                                                     </AlertDialogDescription>
@@ -367,7 +368,7 @@ export default function AWSCloudFormationSetupForm() {
                                                 </AlertDialogTrigger>
                                                 <AlertDialogContent>
                                                     <AlertDialogHeader>
-                                                        <AlertDialogHeader>Delete selected buckets?</AlertDialogHeader>
+                                                        Delete selected buckets?
                                                         <AlertDialogDescription>
                                                             This will delete all selected buckets. This cannot be undone.
                                                         </AlertDialogDescription>
@@ -409,7 +410,7 @@ export default function AWSCloudFormationSetupForm() {
                         <p className='w-full text-muted-foreground'>Once you're done, you can click "Create Configuration File" below to download a CloudFormation template. Deploying this CloudFormation Stack in your AWS account will give you a set of keys that you can use to give Bucket Store access to your Amazon S3 Buckets according to this spec.</p>
                         <div className="w-full flex flex-col items-start gap-2">
                             <div className="w-full flex flex-row items-center gap-2">
-                                <Button type="submit">Create Configuration File</Button>
+                                <Button type="submit" disabled={loading}>Create Configuration File</Button>
                                 <Button type="button" variant="destructive" onClick={resetForm} disabled={!hasBeenModified}>Reset</Button>
                             </div>
                             {(stack || loading) && (

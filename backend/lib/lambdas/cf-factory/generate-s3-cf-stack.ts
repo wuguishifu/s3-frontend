@@ -19,7 +19,7 @@ export const handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayPr
     if (!event.body) {
         const response = {
             statusCode: 400,
-            body: JSON.stringify({ error: 'bad request', message: 'missing request body' })
+            body: JSON.stringify({ error: 'Bad request.', message: 'Missing request body.' })
         };
 
         if (process.env.STAGE === 'dev') console.log(response);
@@ -49,8 +49,8 @@ export const handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayPr
         const response = {
             statusCode: 500,
             body: JSON.stringify({
-                error: 'internal server error',
-                message: error instanceof Error ? error.message : 'an unknown error has occurred'
+                error: 'Internal server error.',
+                message: error instanceof Error ? error.message : 'An unknown error has occurred.'
             })
         };
         if (process.env.STAGE === 'dev') console.log(response);

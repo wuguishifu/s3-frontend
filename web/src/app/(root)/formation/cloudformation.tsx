@@ -92,9 +92,10 @@ export default function AWSCloudFormationSetupForm() {
     const onSubmit = useCallback(async (values: FormSchema) => {
         setLoading(true);
         setStack(null);
-        let response, data;
+
+        let data;
         try {
-            response = await fetch(endpoints.generateS3CfStack, {
+            const response = await fetch('/api/formation', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -102,26 +103,17 @@ export default function AWSCloudFormationSetupForm() {
                 body: JSON.stringify(values)
             });
             data = await response.json();
+            if (data.error) throw new Error(data.error);
         } catch (error) {
-            console.error(error);
-            if (error instanceof Error) {
-                toast.error(error.message);
-            } else {
-                toast.error('An unknown error has occurred');
-            }
-            return;
+            console.error(data);
+            if (error instanceof Error) return toast.error(error.message);
+            return toast.error('An unknown error has occurred.');
         } finally {
             setLoading(false);
         }
-        if (data.error) {
-            console.error(data);
-            toast.error(data.error);
-            return;
-        }
-        if (data.stack) {
-            setStack(data.stack);
-            toast.success('Configuration file created!');
-        }
+
+        setStack(data.stack);
+        return toast.success('Configuration file created!');
     }, []);
 
     function onAddBucket(bucketName: string, removalPolicy: FormSchema['buckets'][number]['removalPolicy']) {

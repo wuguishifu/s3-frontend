@@ -7,8 +7,7 @@ export async function POST(req: Request, context: { params: { user_id: string } 
 
     try {
         const body = await req.json();
-        const accessKeyId = body.accessKeyId;
-        const secretAccessKey = body.secretAccessKey;
+        const defaultRegion = body.defaultRegion;
 
         const querySnapshot = await getDocs(query(
             collection(db, 'awsCredentials'),
@@ -19,16 +18,16 @@ export async function POST(req: Request, context: { params: { user_id: string } 
             const userDocRef = querySnapshot.docs[0].ref;
             await setDoc(
                 userDocRef,
-                { user_id, accessKeyId, secretAccessKey },
+                { user_id, defaultRegion },
                 { merge: true }
             );
-            return NextResponse.json({ documentId: userDocRef.id, accessKeyId, secretAccessKey });
+            return NextResponse.json({ documentId: userDocRef.id, defaultRegion });
         } else {
             const docRef = await addDoc(
                 collection(db, 'awsCredentials'),
-                { user_id, accessKeyId, secretAccessKey }
+                { user_id, defaultRegion }
             );
-            return NextResponse.json({ documentId: docRef.id, accessKeyId, secretAccessKey });
+            return NextResponse.json({ documentId: docRef.id, defaultRegion });
         }
     } catch (error) {
         return NextResponse.json({
@@ -59,8 +58,7 @@ export async function GET(_: Request, context: { params: { user_id: string } }) 
             return NextResponse.json({
                 documentId: userDocRef.id,
                 user_id: data.user_id,
-                accessKeyId: data.accessKeyId,
-                secretAccessKey: data.secretAccessKey
+                defaultRegion: data.defaultRegion
             });
         } else {
             return NextResponse.json({
@@ -88,7 +86,7 @@ export async function DELETE(_: Request, context: { params: { user_id: string } 
             const userDocRef = querySnapshot.docs[0].ref;
             await setDoc(
                 userDocRef,
-                { user_id, accessKeyId: null, secretAccessKey: null },
+                { user_id, defaultRegion: 'us-east-1' },
                 { merge: true }
             );
             return NextResponse.json({ deleted: true });

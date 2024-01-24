@@ -35,7 +35,7 @@ export default function Navbar() {
                         <DropdownMenuLabel>{currentUser.email}</DropdownMenuLabel>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem asChild>
-                            <Link href='/settings/general'>
+                            <Link href='/settings'>
                                 <Settings className="mr-2 h-4 w-4" />
                                 <span>Settings</span>
                             </Link>

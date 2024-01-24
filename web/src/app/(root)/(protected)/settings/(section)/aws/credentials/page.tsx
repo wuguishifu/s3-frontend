@@ -1,5 +1,6 @@
 import Link from "next/link";
 import AWSCredentialsInputForm from "./credentials-form";
+import AWSDefaultRegionInputForm from "./region-form";
 
 export default function AWSCredentials() {
     return (
@@ -33,6 +34,8 @@ export default function AWSCredentials() {
                 </Link>.
             </p>
             <AWSCredentialsInputForm />
+            <p>You can also set your default AWS region. This will be used to initially load your Buckets (in every region). The default for Bucket Store is 'us-east-1', but you can set it to any of the regions within America or Europe (more regions coming later).</p>
+            <AWSDefaultRegionInputForm />
         </>
     );
 };

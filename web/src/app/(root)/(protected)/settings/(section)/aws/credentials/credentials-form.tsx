@@ -4,12 +4,11 @@ import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTrigger } from '@/components/ui/dialog';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { useAuth } from '@/lib/firebase/AuthContext';
-import { useCredentials } from '@/lib/firebase/CredentialsContext';
+import { useAws } from '@/lib/firebase/CredentialsContext';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { DialogClose } from '@radix-ui/react-dialog';
 import { Eye, EyeOff } from 'lucide-react';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import * as z from 'zod';
@@ -29,13 +28,16 @@ const formSchema = z.object({
 type FormSchema = z.infer<typeof formSchema>;
 
 export default function AWSCredentialsInputForm() {
-    const { currentUser } = useAuth();
-    const { accessKeyId, deleteKeys, setKeys } = useCredentials();
-
+    const { accessKeyId, deleteKeys, setKeys, hasCheckedCredentials } = useAws();
     const [loading, setLoading] = useState(false);
 
     const [secretVisible, setSecretVisible] = useState(false);
     const toggleSecretVisibility = useCallback(() => setSecretVisible(b => !b), []);
+
+    useEffect(() => {
+        if (!hasCheckedCredentials || !accessKeyId) return;
+        form.setValue('accessKeyId', accessKeyId);
+    }, [hasCheckedCredentials]);
 
     const form = useForm<FormSchema>({
         resolver: zodResolver(formSchema),
@@ -46,7 +48,7 @@ export default function AWSCredentialsInputForm() {
     });
 
     const onDelete = useCallback(async () => {
-        if (!currentUser?.uid || loading) return;
+        if (loading) return;
         setLoading(true);
 
         try {
@@ -60,10 +62,10 @@ export default function AWSCredentialsInputForm() {
         }
 
         toast.success('Your AWS credentials have been deleted.');
-    }, [currentUser, loading]);
+    }, [loading]);
 
     const onSubmit = useCallback(async (values: FormSchema) => {
-        if (!currentUser?.uid || loading) return;
+        if (loading) return;
         setLoading(true);
 
         try {
@@ -79,7 +81,7 @@ export default function AWSCredentialsInputForm() {
         setSecretVisible(false);
         form.resetField('secretAccessKey');
         toast.success('Your AWS credentials have been saved.');
-    }, [loading, currentUser]);
+    }, [loading]);
 
     return (
         <Form {...form}>
@@ -151,7 +153,7 @@ export default function AWSCredentialsInputForm() {
                             <DialogHeader>
                                 Delete Credentials?
                                 <DialogDescription>
-                                    Are you sure you want to delete your AWS credentials? This action cannot be undone.
+                                    Are you sure you want to delete your AWS credentials? This action cannot be undone. If you wish to use Bucket Store again, you will need to add your credentials again.
                                 </DialogDescription>
                             </DialogHeader>
                             <DialogFooter>

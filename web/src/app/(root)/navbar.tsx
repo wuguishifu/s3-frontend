@@ -25,7 +25,10 @@ export default function Navbar() {
                             <AvatarFallback>
                                 <h2>{currentUser.email?.[0].toUpperCase() ?? '?'}</h2>
                             </AvatarFallback>
-                            <AvatarImage src={currentUser.photoURL ?? undefined} />
+                            <AvatarImage
+                                src={currentUser.photoURL ?? undefined}
+                                referrerPolicy='no-referrer'
+                            />
                         </Avatar>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent>
